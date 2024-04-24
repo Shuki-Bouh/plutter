@@ -1,0 +1,6 @@
+importation := import ident (import ident)*
+program := figure ident {declaration* draw*}
+declaration := ident = expression
+expression := little_expr | (expression, expression) | [expression (, expression)*]
+little_expr := float_lit | ident
+draw := draw ident | expression

@@ -1,0 +1,119 @@
+class Lexem:
+    def __init__(self, kind: str, value: str, position: tuple):
+        self.kind = kind
+        self.value = value
+        self.position = position
+
+    def accept(self, visiteur):
+        return visiteur.visite_lexem(self)
+
+    def draw(self, compilator):
+        if self.kind == 'ident':
+            # Cet appel récursif permet de remonter à la valeur numérique de l'identifiant pour le dessiner
+            return compilator.parseur.value_ident[self.value].draw(compilator)
+        else:
+            return float(self.value)
+
+
+class Lexer:
+    """Créer une liste de lexems à partir d'un fichier"""
+
+    regex = {
+        r'import': 'kw_import',
+        r'figure': 'kw_figure',
+        r'draw': 'kw_draw',
+        r'(': 'kw_lparenthese',
+        r')': 'kw_rparenthese',
+        r'{': 'kw_lcurbrac',
+        r'}': 'kw_rcurbrac',
+        r'[': 'kw_lbracket',
+        r']': 'kw_rbracket',
+        r'=': 'kw_asign',
+        r',': 'kw_comma'
+    }
+
+    def __init__(self, file):
+        self.lexems = []
+        self.run(file)
+        return
+
+    @staticmethod
+    def find_type(word):
+        try:
+            type = Lexer.regex[word]
+        except:
+            try:
+                float(word)
+                type = 'float'
+            except:
+                type = 'ident'
+        return type
+
+    def process(self, data):
+
+        temp = []
+        for row in range(len(data)):
+            data[row] = list(data[row])  # On convertit la chaine de caractère en liste : "bonjour" ->
+            # ['b', 'o', ...] pour travailler caractère par caractère
+            col = 0
+            position = (row, col)  # On initialise la position pour chaque ligne
+            while col < len(data[row]):
+                if data[row][col] == '\n':  # fin de ligne
+                    if temp:  # Si on a un mot en cours de lecture, on l'ajoute à la liste des lexems
+                        valeur = "".join(temp)
+                        kind = self.find_type(valeur)
+                        self.lexems.append(Lexem(kind, valeur, position))
+                        temp = []
+                    else:
+                        break  # On passe à la ligne suivante
+                else:
+                    if "".join(temp) in Lexer.regex:  # On vérifie que le mot en cours de lecture n'est pas un regex
+                        value = "".join(temp)  # Si c'est le cas, on l'ajoute à la liste des lexems
+                        kind = Lexer.regex[value]
+                        self.lexems.append(Lexem(kind, value, position))
+                        position = (row, col)
+                        temp = []
+
+                    if data[row][col] == ' ' or data[row][col] == '\t':
+                        # Dans le cas d'un espace, on voit apparaitre un nouveau lexem
+                        if temp:
+                            valeur = "".join(temp)
+                            kind = self.find_type(valeur)
+                            self.lexems.append(Lexem(kind, valeur, position))
+                            temp = []
+                        position = (row, col+1)
+
+                    elif data[row][col] in Lexer.regex:
+                        # Un autre cas où on doit interrompre notre lexem est le cas où un caractère régulier apparait
+                        if temp:
+                            valeur = "".join(temp)
+                            kind = self.find_type(valeur)
+                            self.lexems.append(Lexem(kind, valeur, position))
+                            temp = []
+                            position = (row, col)
+                        self.lexems.append(Lexem(Lexer.regex[data[row][col]], data[row][col], position))
+                        position = (row, col+1)
+
+                    elif col == len(data[row]) - 1:  # Dernier cas barbare : fin de ligne sans \n
+                        temp.append(data[row][col])
+                        valeur = "".join(temp)
+                        kind = self.find_type(valeur)
+                        self.lexems.append(Lexem(kind, valeur, position))
+                        temp = []
+
+                    else:  # Autrement on continue notre route comme si de rien n'était
+                        temp.append(data[row][col])
+                    col += 1
+            row += 1
+
+    def run(self, file):
+        with open(file) as prog:
+            data = prog.readlines()  # On a récupéré les données du fichier
+        self.process(data)
+
+
+if __name__ == '__main__':
+    lexem = Lexer('../Exemples_programmes/p1')
+    for k in lexem.lexems:
+        print(k.value)
+        print(k.kind)
