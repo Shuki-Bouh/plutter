@@ -4,3 +4,15 @@ declaration := ident = expression
 expression := little_expr | (expression, expression) | [expression (, expression)*]
 little_expr := float_lit | ident
 draw := draw ident | expression
+
+Les différents types :
+
+distance : x = <float>
+point : x = (<float>, <float>)
+segment : x = [point (, point)*]
+droite : x = (point, point)
+cercle : x = (distance, point)
+
+L'affichage :
+
+draw <type> (peut être un ident)
