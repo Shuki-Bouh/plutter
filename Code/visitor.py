@@ -25,13 +25,10 @@ class PrettyPrinter:
               '\n'
         self.indent += 1
         out += program.labels.accept(self) + '\n'
-        out += program.declarations.accept(self) + \
-                 '\n' + \
-              program.to_draw.accept(self) + '}\n______________________\n'
+        out += program.declarations.accept(self) + '\n' + program.to_draw.accept(self) + '}\n______________________\n'
         self.indent -= 1  # En réalité avec ce langage, il n'y a pas de problème d'indentation
 
         return out
-
 
     def visite_body_draw(self, body_draw):
         out = ''
@@ -75,7 +72,7 @@ class PrettyPrinter:
             out += self.indent * '\t' + segment.point[i].accept(self) + ',\n'
         out += self.indent * '\t' + segment.point[-1].accept(self) + '\n'
         self.indent -= 1
-        out += self.indent * '\t' +']' + '\n'
+        out += self.indent * '\t' + ']' + '\n'
         return out
 
     def visite_name(self, name):
@@ -86,10 +83,9 @@ class PrettyPrinter:
 
     def visite_labels(self, labels):
         out = ''
-        for l in labels.labels:
-            out += l.accept(self)
+        for label in labels.labels:
+            out += label.accept(self)
         return out
-
 
     def visite_label(self, label):
         return self.indent * '\t' + label.ident.accept(self) + ' "' + label.name.accept(self) + '"\n'
@@ -119,8 +115,8 @@ class DrawVisitor:
         return
 
     def visite_labels(self, labels):
-        for l in labels.labels:
-            l.accept(self)
+        for label in labels.labels:
+            label.accept(self)
         return
 
     def visite_body_draw(self, body_draw):
@@ -143,22 +139,22 @@ class DrawVisitor:
         self.compilator.ax.plot(point.x.accept(self), point.y.accept(self), 'ro')
 
     def visite_circle(self, circle):
-        X, Y = create_circle((circle.center.x.accept(self), circle.center.y.accept(self)),
-                             circle.radius.accept(self))
+        cos, sin = create_circle((circle.center.x.accept(self), circle.center.y.accept(self)),
+                                 circle.radius.accept(self))
 
-        self.compilator.ax.plot(X, Y, 'r')
+        self.compilator.ax.plot(cos, sin, 'r')
         return
 
     def visite_droite(self, droite):
         self.compilator.ax.plot([droite.point1.x.accept(self), droite.point2.x.accept(self)],
-                           [droite.point1.y.accept(self), droite.point2.y.accept(self)], 'r')
+                                [droite.point1.y.accept(self), droite.point2.y.accept(self)], 'r')
 
         return
 
     def visite_segment(self, segment):
         for i in range(len(segment.point) - 1):
             self.compilator.ax.plot([segment.point[i].x.accept(self), segment.point[i + 1].x.accept(self)],
-                                 [segment.point[i].y.accept(self), segment.point[i + 1].y.accept(self)], 'r')
+                                    [segment.point[i].y.accept(self), segment.point[i + 1].y.accept(self)], 'r')
         return
 
     def visite_distance(self, distance):
@@ -172,4 +168,3 @@ class DrawVisitor:
             return lexem.value
         else:
             return float(lexem.value)
-

@@ -35,17 +35,17 @@ class Lexer:
     @staticmethod
     def find_type(word):
         try:
-            type = Lexer.regex[word]
-        except:
+            type_lex = Lexer.regex[word]
+        except KeyError:
             try:
                 float(word)
-                type = 'float'
-            except:
-                type = 'ident'
-        return type
+                type_lex = 'float'
+            except ValueError:
+                type_lex = 'ident'
+        return type_lex
 
     def process(self, data):
-        str = False
+        is_str = False
         temp = []
         for row in range(len(data)):
             data[row] = list(data[row])  # On convertit la chaine de caractère en liste : "bonjour" ->
@@ -53,9 +53,9 @@ class Lexer:
             col = 0
             position = (row, col)  # On initialise la position pour chaque ligne
             while col < len(data[row]):
-                if str:
+                if is_str:
                     if data[row][col] == '"':
-                        str = False
+                        is_str = False
                         valeur = "".join(temp)
                         kind = 'string'
                         self.lexems.append(Lexem(kind, valeur, position))
@@ -89,10 +89,11 @@ class Lexer:
                                 kind = self.find_type(valeur)
                                 self.lexems.append(Lexem(kind, valeur, position))
                                 temp = []
-                            position = (row, col+1)
+                            position = (row, col + 1)
 
                         elif data[row][col] in Lexer.regex:
-                            # Un autre cas où on doit interrompre notre lexem est le cas où un caractère régulier apparait
+                            # Un autre cas où on doit interrompre notre
+                            # lexem est le cas où un caractère régulier apparait
                             if temp:
                                 valeur = "".join(temp)
                                 kind = self.find_type(valeur)
@@ -100,7 +101,7 @@ class Lexer:
                                 temp = []
                                 position = (row, col)
                             self.lexems.append(Lexem(Lexer.regex[data[row][col]], data[row][col], position))
-                            position = (row, col+1)
+                            position = (row, col + 1)
 
                         elif col == len(data[row]) - 1:  # Dernier cas barbare : fin de ligne sans \n
                             temp.append(data[row][col])
@@ -110,7 +111,7 @@ class Lexer:
                             temp = []
 
                         elif data[row][col] == '"':  # On commence une chaine de caractère
-                            str = True
+                            is_str = True
                             if temp:
                                 valeur = "".join(temp)
                                 kind = self.find_type(valeur)

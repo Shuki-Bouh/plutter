@@ -1,6 +1,7 @@
 from Code.lexer import Lexer
 from Code.ast_project import *
 
+
 class Parseur:
     """Classe qui parcourt l'ensemble des lexems pour créer l'ast et vérifier si
     le programme est conforme à la grammaire"""
@@ -55,7 +56,6 @@ class Parseur:
         self.expect('kw_rcurbrac')
         return Program(name, Labels(labels), BodyDeclaration(declarations), BodyDraw(todraw))
 
-
     def parse_label(self):
         return Label(self.accept(), self.expect('string'))
 
@@ -71,7 +71,7 @@ class Parseur:
 
         lex = self.show_next()
         if self.is_little_expression():
-            value, type = self.parse_little_expression()
+            value, type_expr = self.parse_little_expression()
         elif lex.kind == 'kw_lbracket':
             self.accept()
             value = [self.parse_expression().value]
@@ -82,42 +82,47 @@ class Parseur:
                 lex = self.show_next()
             self.expect('kw_rbracket')
             value = Segment(value)
-            type = 'segment'
+            type_expr = 'segment'
 
         elif lex.kind == 'kw_lparenthese':
             self.accept()
             lex = self.show_next()
 
-            if lex.value in self.ident and self.ident[
-                lex.value] == 'distance' or lex.kind == 'float':  # Deux cas possibles : point ou cercle
+            if (lex.value in self.ident and
+                    self.ident[lex.value] == 'distance' or
+                    lex.kind == 'float'):  # Deux cas possibles : point ou cercle
                 value1 = Distance(self.accept())
                 self.expect('kw_comma')
                 lex = self.show_next()
 
-                if lex.value in self.ident and self.ident[
-                    lex.value] == 'distance' or lex.kind == 'float':  # C'est un point
+                if (lex.value in self.ident and
+                        self.ident[lex.value] == 'distance' or
+                        lex.kind == 'float'):  # C'est un point
                     value2 = Distance(self.accept())
-                    type = 'point'
+                    type_expr = 'point'
                     value = Point(value1, value2)
-                elif lex.value in self.ident and self.ident[
-                    lex.value] == 'point' or lex.kind == 'kw_lparenthese':  # C'est un cercle
+                elif (lex.value in self.ident and
+                      self.ident[lex.value] == 'point' or
+                      lex.kind == 'kw_lparenthese'):  # C'est un cercle
                     value2 = self.parse_expression().value
-                    type = 'circle'
+                    type_expr = 'circle'
                     value = Circle(value1, value2)
 
                 else:
                     raise TypeError("Expected ident, float or point and got ", lex.kind, " at position : ",
                                     lex.position)
 
-            elif lex.kind == 'kw_lparenthese' or lex.value in self.ident and self.ident[
-                lex.value] == 'point':  # C'est une droite
+            elif (lex.kind == 'kw_lparenthese' or
+                  lex.value in self.ident and
+                  self.ident[lex.value] == 'point'):  # C'est une droite
                 value1 = self.parse_expression().value
                 self.expect('kw_comma')
-                if self.show_next().kind != 'kw_lparenthese' and lex.value in self.ident and self.ident[
-                    lex.value] != 'point':
+                if (self.show_next().kind != 'kw_lparenthese' and
+                        lex.value in self.ident and
+                        self.ident[lex.value] != 'point'):
                     raise TypeError("Expected '(' and got ", lex.kind, " at position : ", lex.position)
                 value2 = self.parse_expression().value
-                type = 'droite'
+                type_expr = 'droite'
                 value = Droite(value1, value2)
 
             else:
@@ -127,20 +132,20 @@ class Parseur:
 
         else:
             raise TypeError("Expected ident, float, '[' or '(' and got ", lex.kind, " at position : ", lex.position)
-        return Expression(value, type)
+        return Expression(value, type_expr)
 
     def parse_little_expression(self):
         lex = self.accept()
         if lex.kind == 'ident':
             if lex.value in self.ident:
                 value = lex
-                type = self.ident[lex.value]
+                type_expr = self.ident[lex.value]
             else:
                 raise TypeError("The variable ", lex.value, " is not declared")
         else:
             value = Distance(lex)
-            type = 'distance'
-        return value, type
+            type_expr = 'distance'
+        return value, type_expr
 
     def is_little_expression(self):
         lex = self.show_next()
@@ -151,9 +156,6 @@ class Parseur:
     def parse_draw(self):
         self.expect('kw_draw')
         return Draw(self.parse_expression())
-
-    def initialize(self):
-        return self.parse_importation()
 
     def run(self):
         return self.parse_program()

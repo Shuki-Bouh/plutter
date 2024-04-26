@@ -1,14 +1,6 @@
 from Code.lexer import Lexem
 
 
-class AST:
-    def __init__(self):
-        self.importation = None
-        self.program = None
-
-    def accept(self, visiteur):
-        return visiteur.visite_ast(self)
-
 class Import:
     def __init__(self, ident: Lexem):
         self.ident = ident
@@ -25,16 +17,30 @@ class Importation:
         return visiteur.visite_importation(self)
 
 
-class Program:
-    def __init__(self, name, labels, declarations, to_draw):
-        self.labels = labels
-        self.declarations = declarations
-        self.to_draw = to_draw
+class Name:
+    def __init__(self, name: Lexem):
         self.name = name
-        return
 
     def accept(self, visiteur):
-        return visiteur.visite_program(self)
+        return visiteur.visite_name(self)
+
+
+class LittleExpression:
+    def __init__(self, value, type_lex: str):
+        self.value = value
+        self.type = type_lex
+
+    def accept(self, visiteur):
+        return visiteur.visite_little_expression(self)
+
+
+class Expression:
+    def __init__(self, value, type_obj: str):
+        self.value = value
+        self.type = type_obj
+
+    def accept(self, visiteur):
+        return visiteur.visite_expression(self)
 
 
 class Declaration:
@@ -46,22 +52,12 @@ class Declaration:
         return visiteur.visite_declaration(self)
 
 
-class LittleExpression:
-    def __init__(self, value, type: str):
-        self.value = value
-        self.type = type
+class BodyDeclaration:
+    def __init__(self, declarations: list):
+        self.declarations = declarations
 
     def accept(self, visiteur):
-        return visiteur.visite_little_expression(self)
-
-
-class Expression:
-    def __init__(self, value, type: str):
-        self.value = value
-        self.type = type
-
-    def accept(self, visiteur):
-        return visiteur.visite_expression(self)
+        return visiteur.visite_body_declaration(self)
 
 
 class Draw:
@@ -80,20 +76,42 @@ class BodyDraw:
         return visiteur.visite_body_draw(self)
 
 
-class Name:
-    def __init__(self, name: Lexem):
+class Label:
+    def __init__(self, ident: Lexem, name: Lexem):
+        self.ident = ident
         self.name = name
 
     def accept(self, visiteur):
-        return visiteur.visite_name(self)
+        return visiteur.visite_label(self)
 
 
-class BodyDeclaration:
-    def __init__(self, declarations: list):
-        self.declarations = declarations
+class Labels:
+    def __init__(self, labels: list):
+        self.labels = labels
 
     def accept(self, visiteur):
-        return visiteur.visite_body_declaration(self)
+        return visiteur.visite_labels(self)
+
+
+class Program:
+    def __init__(self, name: Name, labels: Labels, declarations: BodyDeclaration, to_draw: BodyDraw):
+        self.labels = labels
+        self.declarations = declarations
+        self.to_draw = to_draw
+        self.name = name
+        return
+
+    def accept(self, visiteur):
+        return visiteur.visite_program(self)
+
+
+class AST:
+    def __init__(self):
+        self.importation: Importation = None
+        self.program: Program = None
+
+    def accept(self, visiteur):
+        return visiteur.visite_ast(self)
 
 
 class Point:
@@ -103,6 +121,7 @@ class Point:
 
     def accept(self, visiteur):
         return visiteur.visite_point(self)
+
 
 class Circle:
     def __init__(self, radius, center):
@@ -136,20 +155,3 @@ class Distance:
 
     def accept(self, visiteur):
         return visiteur.visite_distance(self)
-
-
-class Label:
-    def __init__(self, ident: Lexem, name: Lexem):
-        self.ident = ident
-        self.name = name
-
-    def accept(self, visiteur):
-        return visiteur.visite_label(self)
-
-
-class Labels:
-    def __init__(self, labels: list):
-        self.labels = labels
-
-    def accept(self, visiteur):
-        return visiteur.visite_labels(self)
