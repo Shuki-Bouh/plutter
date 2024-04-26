@@ -1,5 +1,5 @@
 from Code.parseur import Parseur
-from Code.visitor import PrettyPrinter
+from Code.visitor import *
 import matplotlib.pyplot as plt
 
 
@@ -9,7 +9,7 @@ class CompilatorWithoutDraw:
 
     def __init__(self, file):
         self.parseur = Parseur(file)
-        self.visitor = PrettyPrinter()
+        self.pretty_printer = PrettyPrinter()
         return
 
     def importation(self):
@@ -17,7 +17,7 @@ class CompilatorWithoutDraw:
 
     def gen_ast(self):
         self.ast = self.parseur.run()
-        return self.visitor.visite_program(self.ast)
+        return self.pretty_printer.visite_program(self.ast)
 
     def compile(self):
         file_to_import = self.importation()
@@ -35,7 +35,8 @@ class Compilator:
 
     def __init__(self, file):
         self.parseur = Parseur(file)
-        self.visitor= PrettyPrinter()
+        self.pretty_printer= PrettyPrinter()
+        self.draw_visitor = DrawVisitor(self)
         self.ast = None
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
@@ -47,7 +48,7 @@ class Compilator:
 
     def gen_ast(self):
         self.ast = self.parseur.run()
-        return self.visitor.visite_program(self.ast)
+        return self.pretty_printer.visite_program(self.ast)
 
     def compile(self):
 
@@ -66,9 +67,10 @@ class Compilator:
         return
 
     def drawing(self):
+        self.ax.title.set_text(self.ast.name.name.value)  # On nomme la figure
         to_draw = self.ast.to_draw.to_draw  # On récupère les figures à tracer (c'est une liste
         for draw in to_draw:
-            draw.expr.value.draw(self)
+            draw.expr.value.accept(self.draw_visitor)
 
     @staticmethod
     def draw(file):
@@ -78,6 +80,6 @@ class Compilator:
 
 
 if __name__ == '__main__':
-    compilator = Compilator("../Exemples_programmes/test_compil")
-    compilator.compile()
-    compilator.show()
+    import os
+    os.chdir("../Exemples_programmes")
+    Compilator.draw("test_compil")

@@ -7,13 +7,6 @@ class Lexem:
     def accept(self, visiteur):
         return visiteur.visite_lexem(self)
 
-    def draw(self, compilator):
-        if self.kind == 'ident':
-            # Cet appel récursif permet de remonter à la valeur numérique de l'identifiant pour le dessiner
-            return compilator.parseur.value_ident[self.value].draw(compilator)
-        else:
-            return float(self.value)
-
 
 class Lexer:
     """Créer une liste de lexems à partir d'un fichier"""

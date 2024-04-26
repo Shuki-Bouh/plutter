@@ -36,5 +36,5 @@ Dans un fichier code, on peut écrire des instructions pour afficher des figures
 
 Pour afficher ensuite une telle figure, il suffit d'utiliser la commande "draw" suivie de la figure à afficher.
 En plus de cela, on peut importer un fichier avec la commande
-```import [path]```
+```import [path]``` ou ```ìmport [file]``` si le fichier à importer se trouve dans le même répertoire que le fichier principal.
 Cela permet d'importer une autre figure qu'on peut utiliser et afficher dans le code principal.

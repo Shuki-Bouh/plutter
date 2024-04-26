@@ -1,3 +1,5 @@
+from Code.plot_circle import *
+
 
 class PrettyPrinter:
     def __init__(self):
@@ -53,10 +55,12 @@ class PrettyPrinter:
         return out
 
     def visite_segment(self, segment):
-        out = '['
+        out = '[\n'
+        self.indent += 1
         for i in range(len(segment.point)-1):
-            out += segment.point[i].accept(self) + ', '
-        out += segment.point[-1].accept(self) + ']'
+            out += self.indent * '\t' + segment.point[i].accept(self) + ',\n'
+        out += self.indent * '\t' + segment.point[-1].accept(self) + '\n' + self.indent * '\t' +']' + '\n'
+        self.indent -= 1
         return out
 
     def visite_name(self, name):
@@ -71,5 +75,39 @@ class PrettyPrinter:
         return lexem.value
 
 
-if __name__ == '__main__':
-    pass
+class DrawVisitor:
+    def __init__(self, compilator):
+        self.compilator = compilator
+        return
+
+    def visite_point(self, point):
+        self.compilator.ax.plot(point.x.accept(self), point.y.accept(self), 'ro')
+
+    def visite_circle(self, circle):
+        X, Y = create_circle((circle.center.x.accept(self), circle.center.y.accept(self)),
+                             circle.radius.accept(self))
+
+        self.compilator.ax.plot(X, Y, 'r')
+        return
+
+    def visite_droite(self, droite):
+        self.compilator.ax.plot([droite.point1.x.accept(self), droite.point2.x.accept(self)],
+                           [droite.point1.y.accept(self), droite.point2.y.accept(self)], 'r')
+
+        return
+
+    def visite_segment(self, segment):
+        for i in range(len(segment.point) - 1):
+            self.compilator.ax.plot([segment.point[i].x.accept(self), segment.point[i + 1].x.accept(self)],
+                                 [segment.point[i].y.accept(self), segment.point[i + 1].y.accept(self)], 'r')
+        return
+
+    def visite_distance(self, distance):
+        return distance.value.accept(self)
+
+    def visite_lexem(self, lexem):
+        if lexem.kind == 'ident':
+            # Cet appel récursif permet de remonter à la valeur numérique de l'identifiant pour le dessiner
+            return self.compilator.parseur.value_ident[lexem.value].accept(self)
+        else:
+            return float(lexem.value)

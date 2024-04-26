@@ -1,7 +1,5 @@
 from Code.lexer import Lexer
-from Code.ast import *
-from Code.visitor import PrettyPrinter
-
+from Code.ast_project import *
 
 class Parseur:
     """Classe qui parcourt l'ensemble des lexems pour créer l'ast et vérifier si
@@ -153,7 +151,8 @@ class Parseur:
 
 
 if __name__ == '__main__':
-    pars = Parseur('../Exemples_programmes/p8')
-    program = pars.run()
+    from Code.visitor import PrettyPrinter
     visitor = PrettyPrinter()
+    pars = Parseur('../Exemples_programmes/test_compil')
+    program = pars.run()
     print(program.accept(visitor))
