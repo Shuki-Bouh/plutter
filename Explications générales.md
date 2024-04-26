@@ -50,3 +50,8 @@ Cela permet d'importer une autre figure qu'on peut utiliser et afficher dans le 
 **Visiteur** :
     Un pretty_printer est généré avec le patern visiteur
     Un autre visiteur est créé par le compilateur pour afficher les figures : DrawVisitor
+
+**Stratégie**
+    Une classe Compile est ajoutée pour mettre en place un patern stratégie
+    -> La méthode compile dans Compilator et CompilatorWithoutDraw est modifiée dans Compile 
+pour éviter les trop nombreuses modifications de code

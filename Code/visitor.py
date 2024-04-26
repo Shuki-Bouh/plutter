@@ -130,6 +130,7 @@ class DrawVisitor:
 
     def visite_draw(self, draw):
         draw.expr.value.accept(self)
+        return
 
     def visite_label(self, label):
         if label.ident.kind == 'kw_xlabel':

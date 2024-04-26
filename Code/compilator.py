@@ -19,6 +19,7 @@ class Compile:
             compilator.parseur.value_ident.update(imported.parseur.value_ident)
         print(compilator.gen_ast())  # On affiche le pretty print de l'ast
 
+
 class CompilatorWithoutDraw:
     """Cette classe permet de gérer les importations. Dans ce langage les importations ne servent qu'à déclarer une
     figure sans la tracer. Si on veut la tracer, il faut la tracer dans la figure principale"""
@@ -36,7 +37,7 @@ class CompilatorWithoutDraw:
         return self.pretty_printer.visite_program(self.ast)
 
     def compile(self):
-        Compile.run(self)
+        Compile.run(self)  # Patern stratégie
         return
 
 
