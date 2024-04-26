@@ -9,9 +9,9 @@ Les différents types :
 
 distance : x = <float>
 point : x = (<float>, <float>)
-segment : x = [point (, point)*]
-droite : x = (point, point)
-cercle : x = (distance, point)
+segment : x = [<point> (, <point>)*]
+droite : x = (<point>, <point>)
+cercle : x = (<distance>, <point>)
 
 L'affichage :
 
