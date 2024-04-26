@@ -41,14 +41,23 @@ class Parseur:
         self.expect("kw_figure")
         name = Name(self.expect("ident"))
         self.expect("kw_lcurbrac")
+        labels = []
         declarations = []
         todraw = []
+        if self.show_next().kind == 'kw_xlabel':
+            labels.append(self.parse_label())
+        if self.show_next().kind == 'kw_ylabel':
+            labels.append(self.parse_label())
         while self.show_next().kind == 'ident':
             declarations.append(self.parse_declaration())
         while self.show_next().kind == 'kw_draw':
             todraw.append(self.parse_draw())
         self.expect('kw_rcurbrac')
-        return Program(name, BodyDeclaration(declarations), BodyDraw(todraw))
+        return Program(name, Labels(labels), BodyDeclaration(declarations), BodyDraw(todraw))
+
+
+    def parse_label(self):
+        return Label(self.accept(), self.expect('string'))
 
     def parse_declaration(self):
         lex = self.expect('ident')
@@ -154,5 +163,5 @@ if __name__ == '__main__':
     from Code.visitor import PrettyPrinter
     visitor = PrettyPrinter()
     pars = Parseur('../Exemples_programmes/test_compil')
-    program = pars.run()
-    print(program.accept(visitor))
+    ast_prog = pars.run()
+    print(ast_prog.accept(visitor))

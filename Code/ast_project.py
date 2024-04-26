@@ -1,6 +1,14 @@
 from Code.lexer import Lexem
 
 
+class AST:
+    def __init__(self):
+        self.importation = None
+        self.program = None
+
+    def accept(self, visiteur):
+        return visiteur.visite_ast(self)
+
 class Import:
     def __init__(self, ident: Lexem):
         self.ident = ident
@@ -18,7 +26,8 @@ class Importation:
 
 
 class Program:
-    def __init__(self, name, declarations, to_draw):
+    def __init__(self, name, labels, declarations, to_draw):
+        self.labels = labels
         self.declarations = declarations
         self.to_draw = to_draw
         self.name = name
@@ -127,3 +136,20 @@ class Distance:
 
     def accept(self, visiteur):
         return visiteur.visite_distance(self)
+
+
+class Label:
+    def __init__(self, ident: Lexem, name: Lexem):
+        self.ident = ident
+        self.name = name
+
+    def accept(self, visiteur):
+        return visiteur.visite_label(self)
+
+
+class Labels:
+    def __init__(self, labels: list):
+        self.labels = labels
+
+    def accept(self, visiteur):
+        return visiteur.visite_labels(self)

@@ -1,7 +1,10 @@
 import test_import
 import test_import2
 
-figure dessin {
+figure Dessin {
+    xlabel "Position x (m)"
+    ylabel "Position y (m)"
+
     x = 5
     y = x
     y=(6, 6)

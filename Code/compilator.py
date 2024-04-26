@@ -1,7 +1,23 @@
 from Code.parseur import Parseur
 from Code.visitor import *
 import matplotlib.pyplot as plt
+from Code.ast_project import AST
 
+
+class Compile:
+    def __init__(self):
+        return
+
+    @staticmethod
+    def run(compilator):
+        file_to_import = compilator.importation()
+        for file in file_to_import.imports:
+            imported = CompilatorWithoutDraw(file.ident.value)
+            imported.compile()
+            # On place dans le dictionnaire de l'ast principal les ident et leurs valeurs des figures importées
+            compilator.parseur.ident.update(imported.parseur.ident)
+            compilator.parseur.value_ident.update(imported.parseur.value_ident)
+        print(compilator.gen_ast())  # On affiche le pretty print de l'ast
 
 class CompilatorWithoutDraw:
     """Cette classe permet de gérer les importations. Dans ce langage les importations ne servent qu'à déclarer une
@@ -20,13 +36,7 @@ class CompilatorWithoutDraw:
         return self.pretty_printer.visite_program(self.ast)
 
     def compile(self):
-        file_to_import = self.importation()
-        for file in file_to_import.imports:
-            compilator = Compilator(file.ident.value)
-            compilator.compile()
-            self.parseur.ident.update(compilator.parseur.ident)
-            self.parseur.value_ident.update(compilator.parseur.value_ident)
-        print(self.gen_ast())
+        Compile.run(self)
         return
 
 
@@ -37,40 +47,24 @@ class Compilator:
         self.parseur = Parseur(file)
         self.pretty_printer= PrettyPrinter()
         self.draw_visitor = DrawVisitor(self)
-        self.ast = None
+        self.ast = AST()
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
         plt.axis('equal')
         return
 
     def importation(self):
-        return self.parseur.initialize()
+        self.ast.importation = self.parseur.initialize()
+        return self.ast.importation
 
     def gen_ast(self):
-        self.ast = self.parseur.run()
-        return self.pretty_printer.visite_program(self.ast)
+        self.ast.program = self.parseur.run()
+        return self.pretty_printer.visite_ast(self.ast)
 
     def compile(self):
-
-        # Partie dédiée à l'importation
-        file_to_import = self.importation()
-        for file in file_to_import.imports:
-            compilator = CompilatorWithoutDraw(file.ident.value)
-            compilator.compile()
-            # On place dans le dictionnaire de l'ast principal les ident et leurs valeurs des figures importées
-            self.parseur.ident.update(compilator.parseur.ident)
-            self.parseur.value_ident.update(compilator.parseur.value_ident)
-
-        print(self.gen_ast())  # On affiche le pretty print de l'ast
-
-        self.drawing()  # On trace les figures
+        Compile.run(self)
+        self.draw_visitor.visite_ast(self.ast)
         return
-
-    def drawing(self):
-        self.ax.title.set_text(self.ast.name.name.value)  # On nomme la figure
-        to_draw = self.ast.to_draw.to_draw  # On récupère les figures à tracer (c'est une liste
-        for draw in to_draw:
-            draw.expr.value.accept(self.draw_visitor)
 
     @staticmethod
     def draw(file):
