@@ -59,8 +59,9 @@ class PrettyPrinter:
         self.indent += 1
         for i in range(len(segment.point)-1):
             out += self.indent * '\t' + segment.point[i].accept(self) + ',\n'
-        out += self.indent * '\t' + segment.point[-1].accept(self) + '\n' + self.indent * '\t' +']' + '\n'
+        out += self.indent * '\t' + segment.point[-1].accept(self) + '\n'
         self.indent -= 1
+        out += self.indent * '\t' +']' + '\n'
         return out
 
     def visite_name(self, name):
@@ -111,3 +112,4 @@ class DrawVisitor:
             return self.compilator.parseur.value_ident[lexem.value].accept(self)
         else:
             return float(lexem.value)
+
