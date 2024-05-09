@@ -1,5 +1,5 @@
-from Code.lexer import Lexer
-from Code.ast_project import *
+from plutter.Code.lexer import Lexer
+from plutter.Code.ast_project import *
 
 
 class Parseur:

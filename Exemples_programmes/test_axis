@@ -1,0 +1,4 @@
+figure dessin {
+    xlabel "x"  // On définie les labels des axes
+    ylabel "y"
+}

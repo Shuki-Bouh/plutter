@@ -1,0 +1,13 @@
+figure dessin {
+    a = 5  // Distance
+    b = (a, 5)  // Point
+    c = [b, b,b ,(2,3),(4,4)]  // Segment
+    cercle = (a, b) // Cercle
+    droite = (b, (3,3)) // Droite
+
+    draw a
+    draw b
+    draw c
+    draw cercle
+    draw droite
+}

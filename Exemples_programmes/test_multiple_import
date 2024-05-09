@@ -1,0 +1,7 @@
+import fig_a
+import fig_z
+
+figure dessin {
+    draw b
+    draw c
+    }

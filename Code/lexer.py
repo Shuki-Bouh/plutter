@@ -24,7 +24,7 @@ class Lexer:
         r'[': 'kw_lbracket',
         r']': 'kw_rbracket',
         r'=': 'kw_asign',
-        r',': 'kw_comma'
+        r',': 'kw_comma',
     }
 
     def __init__(self, file):
@@ -46,6 +46,7 @@ class Lexer:
 
     def process(self, data):
         is_str = False
+        is_comment = False
         temp = []
         for row in range(len(data)):
             data[row] = list(data[row])  # On convertit la chaine de caractère en liste : "bonjour" ->
@@ -53,7 +54,18 @@ class Lexer:
             col = 0
             position = (row, col)  # On initialise la position pour chaque ligne
             while col < len(data[row]):
-                if is_str:
+                if "".join(temp) == '//':
+                    temp = []
+                    break
+                elif "".join(temp) == '/*':
+                    is_comment = True
+                    temp = []
+                elif '*/' in "".join(temp):
+                    temp = []
+                    is_comment = False
+                elif is_comment:
+                    temp.append(data[row][col])
+                elif is_str:
                     if data[row][col] == '"':
                         is_str = False
                         valeur = "".join(temp)
@@ -131,7 +143,6 @@ class Lexer:
 
 
 if __name__ == '__main__':
-    lexem = Lexer('../Exemples_programmes/p1')
-    for k in lexem.lexems:
-        print(k.value)
-        print(k.kind)
+    lexem = Lexer('../Exemples_programmes/test_import')
+    for lex in lexem.lexems:
+        print(lex.value)

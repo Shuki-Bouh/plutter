@@ -1,0 +1,7 @@
+figure z {
+    b = (8, 8)
+    arggg = (9,9)
+    w = 5
+
+    draw arggg
+}

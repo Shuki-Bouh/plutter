@@ -7,7 +7,7 @@ os.chdir("../Exemples_programmes")
 
 class conf_pars:
     def __init__(self):
-        self.valid = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'test_compil', 'test_import', 'test_import2']
+        self.valid = ['test_name_figure', 'test_import', 'test_axis', 'test_distance', 'test_draw_all_type', 'p6', 'p7', 'p8', 'test_compil', 'fig_z', 'fig_a']
         self.compil_prog()
         return
 

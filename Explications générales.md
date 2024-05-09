@@ -39,6 +39,21 @@ En plus de cela, on peut importer un fichier avec la commande
 ```import [path]``` ou ```ìmport [file]``` si le fichier à importer se trouve dans le même répertoire que le fichier principal.
 Cela permet d'importer une autre figure qu'on peut utiliser et afficher dans le code principal.
 
+## Grammaire
+
+```
+Import : (import ident)*
+figure : figue ident { label* declaration* draw* }
+label : xlabel string | ylabel string
+declaration : DistanceDecl | PointDecl | SegmentDecl | CercleDecl | DroiteDecl
+DistanceDecle : ident = little_expr
+PointDecl : ident = (little_expr, little_expr)
+SegmentDecl : ident = [Point (, Point)*]
+CercleDecl : ident = (little_expr, Point)
+DroiteDecl : ident = (Point, Point)
+little_expr : float | ident
+```
+
 ## Figure imposée
 
 **Lexer** : lexer du TD légèrement modifié pour qu'il corresponde au langage
@@ -51,6 +66,7 @@ Cela permet d'importer une autre figure qu'on peut utiliser et afficher dans le 
     Un pretty_printer est généré avec le patern visiteur
     Un autre visiteur est créé par le compilateur pour afficher les figures : DrawVisitor
 
-**Stratégie**
-    La classe Compilator hérite de la classe CompileWithoutDrawing pour factoriser le code
-    en créant deux comportements très similaires à partir des mêmes méthodes
+## Remarques :
+
+ - Il est possible d'écrire des commentaires avec // ou /* */
+ - Un certain nombre de programmes test sont disponibles dans le dossier test pour voir les fonctionnalités du langage

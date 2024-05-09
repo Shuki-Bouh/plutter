@@ -1,0 +1,11 @@
+figure ddd {
+    /* Attention ici, pour réecrire sur a, il ne faut pas utiliser a :
+    a = 5, a = (a, a) ne fonctionne pas */
+    a = 5
+    a = (6, 4)
+    b = (4, 4)
+    c = b
+    draw a
+    draw c
+
+}

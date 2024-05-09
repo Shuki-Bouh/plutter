@@ -1,4 +1,0 @@
-figure dessin {
-    a = 5
-    b = (a, 5)
-}

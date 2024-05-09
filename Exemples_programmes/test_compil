@@ -1,8 +1,10 @@
-import test_import
-import test_import2
+import fig_a
+import fig_z
 
 figure Dessin {
-    xlabel "Position x (m)"
+    /* Test
+    Test */
+    xlabel "Position x (m)" // Test
     ylabel "Position y (m)"
 
     x = 5

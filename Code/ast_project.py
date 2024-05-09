@@ -1,4 +1,4 @@
-from Code.lexer import Lexem
+from plutter.Code.lexer import Lexem
 
 
 class Import:

@@ -1,8 +1,0 @@
-figure dessin {
-    a = 5
-    b = (a, 5)
-    c = (b, (4, 4))
-
-    draw c
-    draw b
-}

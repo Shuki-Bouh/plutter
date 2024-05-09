@@ -1,7 +1,7 @@
-from Code.parseur import Parseur
-from Code.visitor import *
+from plutter.Code.parseur import Parseur
+from plutter.Code.visitor import *
 import matplotlib.pyplot as plt
-from Code.ast_project import AST
+from plutter.Code.ast_project import AST
 
 
 class CompileWithoutDrawing:
@@ -57,4 +57,4 @@ class Compilator(CompileWithoutDrawing):
 if __name__ == '__main__':
     import os
     os.chdir("../Exemples_programmes")
-    Compilator.draw("test_compil")
+    Compilator.draw("test_overwrite")

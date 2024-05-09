@@ -1,4 +1,4 @@
-from Code.plot_circle import *
+from plutter.Code.plot_circle import create_circle
 
 
 class PrettyPrinter:
@@ -72,7 +72,7 @@ class PrettyPrinter:
             out += self.indent * '\t' + segment.point[i].accept(self) + ',\n'
         out += self.indent * '\t' + segment.point[-1].accept(self) + '\n'
         self.indent -= 1
-        out += self.indent * '\t' + ']' + '\n'
+        out += self.indent * '\t' + ']'
         return out
 
     def visite_name(self, name):
@@ -98,6 +98,7 @@ class PrettyPrinter:
 class DrawVisitor:
     def __init__(self, compilator):
         self.compilator = compilator
+        self.drawing = True
         return
 
     def visite_ast(self, ast):
@@ -136,25 +137,40 @@ class DrawVisitor:
         return
 
     def visite_point(self, point):
-        self.compilator.ax.plot(point.x.accept(self), point.y.accept(self), 'ro')
+        if self.drawing:
+            self.compilator.ax.plot(point.x.accept(self), point.y.accept(self), 'ro')
+        else:
+            return point.x.accept(self), point.y.accept(self)
 
     def visite_circle(self, circle):
-        cos, sin = create_circle((circle.center.x.accept(self), circle.center.y.accept(self)),
+        self.drawing = False
+        x, y = circle.center.accept(self)
+        self.drawing = True
+        cos, sin = create_circle((x, y),
                                  circle.radius.accept(self))
+
 
         self.compilator.ax.plot(cos, sin, 'r')
         return
 
     def visite_droite(self, droite):
-        self.compilator.ax.plot([droite.point1.x.accept(self), droite.point2.x.accept(self)],
-                                [droite.point1.y.accept(self), droite.point2.y.accept(self)], 'r')
+        self.drawing = False
+        x1, y1 = droite.point1.accept(self)
+        x2, y2 = droite.point2.accept(self)
+        self.drawing = True
+        self.compilator.ax.plot([x1, x2],
+                                [y1, y2], 'r')
 
         return
 
     def visite_segment(self, segment):
         for i in range(len(segment.point) - 1):
-            self.compilator.ax.plot([segment.point[i].x.accept(self), segment.point[i + 1].x.accept(self)],
-                                    [segment.point[i].y.accept(self), segment.point[i + 1].y.accept(self)], 'r')
+            self.drawing = False
+            x1, y1 = segment.point[i].accept(self)
+            x2, y2 = segment.point[i+1].accept(self)
+            self.drawing = True
+            self.compilator.ax.plot([x1, x2],
+                                    [y1, y2], 'r')
         return
 
     def visite_distance(self, distance):

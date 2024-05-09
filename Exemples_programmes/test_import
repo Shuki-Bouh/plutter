@@ -1,3 +1,9 @@
-figure z {
-    b = (8, 8)
+import fig_z
+
+
+figure dessin {
+    /* b appartient à la figure z et est importé comme variable locale de la figure dessin, on peut donc la dessiner
+     Il est possible de modifier la valeur d'une variable (et son type) une fois celle-ci déclarée*/
+
+    draw b
 }
