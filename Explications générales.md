@@ -73,4 +73,4 @@ little_expr : float | ident
 ## Remarques :
 
  - Il est possible d'écrire des commentaires avec // ou /* */
- - Un certain nombre de programmes test sont disponibles dans le dossier Exemples Programmes pour voir les fonctionnalités du langage
+ - Un certain nombre de programmes test sont disponibles dans le dossier Exemples_Programmes pour voir les fonctionnalités du langage
