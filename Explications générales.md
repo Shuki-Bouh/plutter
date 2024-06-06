@@ -13,7 +13,7 @@ Pour installer le Plutter, il suffit de cloner le dépôt git suivant :
 git clone https://github.com/Shuki-Bouh/plutter.git
 ```
 
-puis d'exécuter la commande shell suivante :
+puis en vous placant dans le répertoire plutter, exécutez la commande shell suivante :
 
 ```
 pip install -r requirements.txt
@@ -21,11 +21,15 @@ pip install -r requirements.txt
 
 ## Utilisation
 
-Pour exécuter un script Plutter, il suffit d'utiliser la commande suivante :
+Pour exécuter un script Plutter, vous devez vous placer dans le répertoire où plutter est clone (et non pas dans le 
+répertoire plutter). Exemple : si le dossier plutter se trouve dans Downloads, veuillez vous placer dans Downloads puis exécutez :
 
 ```python -m plutter [path]```
 
-où `[path]` est le chemin du fichier contenant les instructions à exécuter.
+où `[path]` est le code source de votre programme principal. Si vous importez des figures, ces figures doivent se 
+trouver dans le même répertoire que votre code principal. `[path]` peut être un chemin absolu ou relatif.
+
+
 
 Dans un fichier code, on peut écrire des instructions pour afficher des figures :
 
@@ -36,7 +40,7 @@ Dans un fichier code, on peut écrire des instructions pour afficher des figures
 
 Pour afficher ensuite une telle figure, il suffit d'utiliser la commande ```draw``` suivie de la figure à afficher.
 En plus de cela, on peut importer un fichier avec la commande
-```import [path]``` ou ```ìmport [file]``` si le fichier à importer se trouve dans le même répertoire que le fichier principal.
+```ìmport [file]``` `[file]` étant un fichier dans le même répertoire que le code source.
 Cela permet d'importer une autre figure qu'on peut utiliser et afficher dans le code principal.
 
 ## Grammaire
